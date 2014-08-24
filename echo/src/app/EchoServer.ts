@@ -1,11 +1,7 @@
-/// <reference path="./declare/declare.d.ts" />
+/// <reference path="./declare.d.ts" />
 
-var fs = require('fs');
-var app = require('http').createServer(function(req:any, res:any) {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-      res.end(fs.readFileSync('index.html'));  
-}).listen(3100);
-var io = require('socket.io').listen(app);
+var io = require('socket.io').listen(3100);
+
 io.sockets.on('connection', function(socket:any) {
     socket.on('msg', function(data:any) {
           io.sockets.emit('msg', data);
