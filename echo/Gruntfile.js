@@ -16,16 +16,12 @@ module.exports = function(grunt){
     },
     uglify : {
       app : {
-        dist : {
-          src : ["src/app/EchoServer.js"],
-          dest : "app/echo.min.js"
-        }
+        src : "src/app/EchoServer.js",
+        dest : "app/echo.min.js"
       },
       web : {
-        dist : {
-          src : ["src/web/js/Client.js"],
-          dest : "web/js/client.min.js"
-        }
+        src : "src/web/js/Client.js",
+        dest : "web/js/client.min.js"
       }
     }
   });
@@ -34,10 +30,10 @@ module.exports = function(grunt){
     switch (target){
       case 'echo':
         console.log("echo");
-        break;
+      break;
       default:
         console.log("default");
-        break;
+      break;
     }
   });
 
