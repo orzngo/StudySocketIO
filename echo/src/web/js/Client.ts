@@ -8,6 +8,7 @@ $(function() {
     return false;
   });
   socket.on('msg', function(data:any) {
+    data = $('<div/>').text(data).html();
     $('div').prepend(data + '<br>');
   });
 });

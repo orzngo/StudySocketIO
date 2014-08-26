@@ -1,5 +1,6 @@
 *.log
 *node_modules
 *.min.js
+echo/app/EchoServer.js
 echo/src/app/EchoServer.js
 echo/src/web/js/Client.js

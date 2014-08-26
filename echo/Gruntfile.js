@@ -7,7 +7,7 @@ module.exports = function(grunt){
     typescript : {
       app : {
         src : ["src/app/EchoServer.ts"],
-        dest : "src/app/EchoServer.js"
+        dest : "app/EchoServer.js"
       },
       web : {
         src : ["src/web/js/Client.ts"],
@@ -15,10 +15,6 @@ module.exports = function(grunt){
       }
     },
     uglify : {
-      app : {
-        src : "src/app/EchoServer.js",
-        dest : "app/echo.min.js"
-      },
       web : {
         src : "src/web/js/Client.js",
         dest : "web/js/client.min.js"
