@@ -5,6 +5,10 @@ module.exports = function(grunt){
 
   grunt.initConfig({
     typescript : {
+      options : {
+        target : 'es5',
+        noImplicitAny : true
+      },
       app : {
         src : ["src/app/ChatServer.ts"],
         dest : "app/ChatServer.js"
