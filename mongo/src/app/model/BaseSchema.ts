@@ -12,12 +12,11 @@ module ChatServer.model {
     private _instance:any;
 
     static initialize(schema:ISchemaFormat):void {
-      console.log("initialize start");
       var mongoose = BaseSchema.mongoose;
       var format:any = schema.format;
       if(!schema.noTimestamp){
-        format.created = {type:Date, Default: Date.now()};
-        format.updated = {type:Date, Default: Date.now()};
+        format.created = {type:Date, Default: Date.now};
+        format.updated = {type:Date, Default: Date.now};
 
         var schemaObject = new mongoose.Schema(format, {collection: schema.modelName});
         BaseSchema._setupPlugins(schemaObject);
@@ -49,13 +48,20 @@ module ChatServer.model {
     }
 
     save(opt:any, callback:Function):void {
-      console.log(opt);
+      console.log(BaseSchema.Model().findOrCreate);
       BaseSchema.Model().findOrCreate(opt, function(err:any, instance:any, created:Boolean):void{
+        console.log("saved!!" + instance);
         this._instance = instance;
         callback(err, instance, created);
       });
     }
 
+    toJSONString():String {
+      console.log(this._schema.modelName + "/BaseSchema.toJSONString()");
+      var result:String;
+      result = this._schema.modelName;
 
+      return result;
+    }
   }
 }

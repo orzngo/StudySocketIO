@@ -1,5 +1,5 @@
-/// <reference path="../../declare/jquery.d.ts" />
-/// <reference path="../../declare/socket.io/socket.io.d.ts" />
+/// <reference path="../../lib/declare/jquery.d.ts" />
+/// <reference path="../../lib/declare/socket.io/socket.io.d.ts" />
 
 declare var io : {
   connect(url:string): Socket;

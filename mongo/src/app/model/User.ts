@@ -2,18 +2,19 @@
 
 module ChatServer.model {
   export class User extends BaseSchema{
-    private _socket:Number;
+    private _socket:String;
     private _name:String;
     private _ip:String;
 
-    constructor(name:String, ip:String = null){
+    constructor(name:String, ip:String = null, socket:String = null){
       this._name = name;
       this._ip = ip;
+      this._socket = socket;
       super({
-modelName:'User',
+        modelName:'User',
         format : {
-name: String,
-ip: String
+          name: String,
+          ip: String
         }
       });
 
@@ -34,7 +35,7 @@ ip: String
       return this._ip;
     }
 
-    get socket() : Number {
+    get socket() : String {
       return this._socket;
     }
 

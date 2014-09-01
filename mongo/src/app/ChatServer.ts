@@ -4,6 +4,7 @@
 
 module ChatServer{
   import User = model.User;
+  import ChatLog = model.ChatLog;
 
   export class ChatServer {
     private _mongoose:any;
@@ -23,7 +24,7 @@ module ChatServer{
           if(!this._activeUsers[socket.id]) {
             var user:User = new User(data.name, socket.handshake.address.address);
             this._activeUsers[socket.id] = user;
-            user.save({}, function(){console.log("saved");});
+            user.save({}, function(){});
 
             this._initializeSocketEvents(socket);
 
@@ -37,7 +38,10 @@ module ChatServer{
 
     private _initializeSocketEvents(socket:any) {
         socket.on('msg', function(data:any) {
-          this._server.sockets.emit('msg', data);
+          var log:ChatLog = new ChatLog(this._activeUsers[socket.id] ,data);
+          this._server.sockets.emit('msg', log, function() {
+            log.save({}, function(){});
+          });
         });
 
         socket.on('disconnect', function(){
