@@ -8,8 +8,8 @@ module ChatServer.model {
     static initialized:boolean = false;
     static _model:any;
 
-    private _schema:ISchemaFormat;
     private _instance:any;
+    private _schema:ISchemaFormat;
 
     static initialize(schema:ISchemaFormat):void {
       var mongoose = BaseSchema.mongoose;
@@ -18,7 +18,7 @@ module ChatServer.model {
         format.created = {type:Date, Default: Date.now};
         format.updated = {type:Date, Default: Date.now};
 
-        var schemaObject = new mongoose.Schema(format, {collection: schema.modelName});
+        var schemaObject = new mongoose.Schema(format);
         BaseSchema._setupPlugins(schemaObject);
 
         mongoose.model(schema.modelName, schemaObject);
@@ -48,19 +48,35 @@ module ChatServer.model {
     }
 
     save(opt:any, callback:Function):void {
-      console.log(BaseSchema.Model().findOrCreate);
-      BaseSchema.Model().findOrCreate(opt, function(err:any, instance:any, created:Boolean):void{
-        console.log("saved!!" + instance);
+      BaseSchema.Model().findOrCreate(opt, (err:any, instance:any, created:Boolean):void =>{
         this._instance = instance;
         callback(err, instance, created);
       });
     }
 
     toJSONString():String {
-      console.log(this._schema.modelName + "/BaseSchema.toJSONString()");
       var result:String;
-      result = this._schema.modelName;
+      var targetObject:any;
+      var id:String;
+      var prefix:String = "_";
+      
+      if (this._instance) {
+        targetObject = this._instance
+        id = targetObject._id;
+        prefix = "";
+      } else {
+        targetObject = this;
+        id = null;
+      }
+      result = '{\n"_id" : ' + id + ',\n';
 
+      for (var i in this._schema.format){
+        var key = i;
+        if (targetObject[prefix + key]){
+          result +='"' + i + '"' + " : " + ((targetObject[key].toJSONString) ? targetObject[key].toJSONString() : targetObject[key] + ",\n");
+        }
+      }
+      result += "}";
       return result;
     }
   }
