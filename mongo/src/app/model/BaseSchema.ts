@@ -17,16 +17,15 @@ module ChatServer.model {
       if(!schema.noTimestamp){
         format.created = {type:Date, Default: Date.now};
         format.updated = {type:Date, Default: Date.now};
-
-        var schemaObject = new mongoose.Schema(format);
-        BaseSchema._setupPlugins(schemaObject);
-
-        mongoose.model(schema.modelName, schemaObject);
-        BaseSchema._model = mongoose.model(schema.modelName);
-
-        BaseSchema.initialized = true;
-
       }
+      var schemaObject = new mongoose.Schema(format);
+      BaseSchema._setupPlugins(schemaObject);
+
+      mongoose.model(schema.modelName, schemaObject);
+      BaseSchema._model = mongoose.model(schema.modelName);
+
+      BaseSchema.initialized = true;
+
     }
 
     private static _setupPlugins(schema:any):void {
