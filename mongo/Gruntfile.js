@@ -7,7 +7,8 @@ module.exports = function(grunt){
     typescript : {
       options : {
         target : 'es5',
-        noImplicitAny : true
+        noImplicitAny : true,
+        module : 'commonjs'
       },
       app : {
         src : ["src/app/ChatServer.ts"],
