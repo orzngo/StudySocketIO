@@ -50,6 +50,14 @@ class User {
     this._socketId = val;
   }
 
+  get document():UserDocument {
+    return this._user;
+  }
+
+  save(callback:(error:any, res:UserDocument) => void):void {
+    this._user.save(callback);
+  }
+
 }
 
 export = User;

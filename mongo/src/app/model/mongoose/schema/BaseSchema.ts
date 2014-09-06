@@ -3,10 +3,10 @@
 import mongoose = require('mongoose');
 
 class BaseSchema extends mongoose.Schema {
-  constructor(schema?: Object, options?: any) {
+  constructor(schema: any, options: any = {}) {
     if (!options.noTimestamp) {
-      options.created = {type : Date , default:Date.now};
-      options.updated = {type : Date , default:Date.now};
+      schema.created = {type : Date , default:Date.now};
+      schema.updated = {type : Date , default:Date.now};
     }
     super(schema, options);
   }
