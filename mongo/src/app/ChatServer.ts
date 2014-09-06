@@ -1,52 +1,37 @@
 /// <reference path="./declare.d.ts" />
-/// <reference path="./model/User.ts" />
-/// <reference path="./model/ChatLog.ts" />
+
+import User = require('./model/User');
+import Mongoose = require('mongoose');
+import SocketIO = require('socket.io');
 
 module ChatServer{
-  import User = model.User;
-  import ChatLog = model.ChatLog;
+  import Socket = SocketIO.Socket;
+  import SocketManager = SocketIO.SocketManager;
 
   export class ChatServer {
-    private _mongoose:any;
-    private _server:any;
+    private _server:SocketManager;
 
     private _activeUsers:{ [id:string] : User; };
 
 
     constructor(port:Number){
-      this._mongoose = require('mongoose');
-      this._mongoose.connect('mongodb://localhost/orzngo');
-      this._server = require('socket.io').listen(port);
+      Mongoose.connect('mongodb://localhost/orzngo');
+      this._server = SocketIO.listen(port);
 
 
-      this._server.sockets.on('connection', function(socket:any) {
-        socket.on('register', function(data:{name:String}) {
-          if(!this._activeUsers[socket.id]) {
-            var user:User = new User(data.name, socket.handshake.address.address);
-            this._activeUsers[socket.id] = user;
-            user.save({}, function(){});
-
-            this._initializeSocketEvents(socket);
-
-          }
+      this._server.sockets.on('connection', function(socket:Socket) {
+        socket.on('register', function(data:{name:String}){
+          var user:User = new User(data.name, socket.handshake.headers.address, socket.id);
         });
-
-
       });
     }
 
 
     private _initializeSocketEvents(socket:any) {
         socket.on('msg', function(data:any) {
-          var log:ChatLog = new ChatLog(this._activeUsers[socket.id] ,data);
-          this._server.sockets.emit('msg', log, function() {
-            log.save({}, function(){});
-          });
         });
 
         socket.on('disconnect', function(){
-          this._server.sockets.emit('sysmsg', this._activeUsers[socket.id].name + ' disconnected.');
-          delete this._activeUsers[socket.id];
         });
     }
   }

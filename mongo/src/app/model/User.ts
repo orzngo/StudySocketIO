@@ -1,43 +1,55 @@
-/// <reference path="./BaseSchema.ts" />
+/// <reference path='../declare.d.ts' />
 
-module ChatServer.model {
-  export class User extends BaseSchema{
-    private _socket:String;
-    private _name:String;
-    private _ip:String;
-
-    constructor(name:String, ip:String = null, socket:String = null){
-      this._name = name;
-      this._ip = ip;
-      this._socket = socket;
-      super({
-        modelName:'User',
-        format : {
-          name: String,
-          ip: String
-        }
-      });
+import mongoose = require('mongoose');
+import BaseSchema = require('./mongoose/schema/BaseSchema');
+import UserModel = require('./mongoose/model/User');
+import UserDocument = require('./mongoose/document/UserDocument');
 
 
-    }
 
-    save(opt:any = {}, callback:Function = function(){}):void {
-      opt.name = this._name;
-      opt.ip = this._ip;
-      super.save(opt,callback);
-    }
+class User {
+  static schema:BaseSchema = new BaseSchema({
+    name:String,
+    ip:String,
+  });
 
-    get name() : String {
-      return this._name;
-    }
+  static UserModel:UserModel = <UserModel>mongoose.model('User', User.schema);
 
-    get ip() : String {
-      return this._ip;
-    }
+  //モデルのインスタンス
+  private _user:UserDocument;
 
-    get socket() : String {
-      return this._socket;
-    }
+  //その他のインスタンス
+  private _socketId:String
 
+  constructor (name:String, ip?:String, socketId?:String) {
+    this._user = new User.UserModel({name:name, ip:ip});
+    this._socketId = socketId;
   }
+
+  get name():String {
+    return this._user.name;
+  }
+
+  set name(val:String) {
+    this._user.name = val;
+  }
+
+  get ip():String {
+    return this._user.ip;
+  }
+
+  set ip(val:String) {
+    this._user.ip = val;
+  }
+
+  get socketId():String {
+    return this._socketId;
+  }
+
+  set socketId(val:String) {
+    this._socketId = val;
+  }
+
 }
+
+export = User;
