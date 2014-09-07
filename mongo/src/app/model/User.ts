@@ -21,8 +21,22 @@ class User {
   //その他のインスタンス
   private _socketId:String
 
-  constructor (name:String, ip?:String, socketId?:String) {
-    this._user = new User.UserModel({name:name, ip:ip});
+  static findOrCreate(opt:{}, callback:(err:any, instance:User) => void):void {
+    User.UserModel.findOrCreate(opt, (err:any, document:UserDocument) => {
+      var user:User = new User(document);
+      callback(err, user);
+    });
+  }
+
+
+  constructor (document:UserDocument);
+  constructor (name:String);
+  constructor (value:any, ip?:String, socketId?:String) {
+    if (value instanceof String) {
+      this._user = new User.UserModel({name:value, ip:ip});
+    } else {
+      this._user = value;
+    }
     this._socketId = socketId;
   }
 

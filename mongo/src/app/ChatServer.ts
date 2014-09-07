@@ -4,38 +4,44 @@ import User = require('./model/User');
 import Mongoose = require('mongoose');
 import SocketIO = require('socket.io');
 
-module ChatServer{
-  import Socket = SocketIO.Socket;
-  import SocketManager = SocketIO.SocketManager;
+import Socket = SocketIO.Socket;
+import SocketManager = SocketIO.SocketManager;
 
-  export class ChatServer {
-    private _server:SocketManager;
+class ChatServer {
+  private _server:SocketManager;
 
-    private _activeUsers:{ [id:string] : User; };
-
-
-    constructor(port:Number){
-      Mongoose.connect('mongodb://localhost/orzngo');
-      this._server = SocketIO.listen(port);
+  private _activeUsers:{ [id:string] : User; };
 
 
-      this._server.sockets.on('connection', function(socket:Socket) {
-        socket.on('register', function(data:{name:String}){
-          var user:User = new User(data.name, socket.handshake.headers.address, socket.id);
+  constructor(port:Number){
+    Mongoose.connect('mongodb://localhost/orzngo');
+    this._server = SocketIO.listen(port);
+
+
+    this._server.sockets.on('connection', function(socket:Socket) {
+      socket.on('register', function(data:{name:String}){
+        User.findOrCreate({name:name, ip:socket.handshake.headers.address}, (err:any, user:User) => {
+          this._activeUsers[socket.id] = user;
+          this._initializeSocketEvents(socket);
+          socket.emit('registerd', 'registerd');
         });
       });
-    }
+    });
+  }
 
+  private _initializeSocketEvents(socket:Socket) {
+    socket.on('msg', function(data:any) {
+      this._server.sockets.emit('msg', data,function(){
+        console.log(data);
+      });
+    });
 
-    private _initializeSocketEvents(socket:any) {
-        socket.on('msg', function(data:any) {
-        });
-
-        socket.on('disconnect', function(){
-        });
-    }
+    socket.on('disconnect', function(){
+      delete this._activeUsers[socket.id];
+      socket.disconnect();
+    });
   }
 }
 
+export = ChatServer;
 
-var server = new ChatServer.ChatServer(3100);
