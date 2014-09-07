@@ -10,17 +10,19 @@ import SocketManager = SocketIO.SocketManager;
 class ChatServer {
   private _server:SocketManager;
 
-  private _activeUsers:{ [id:string] : User; };
+  private _activeUsers:User[] = new Array<User>();
 
 
   constructor(port:Number){
     Mongoose.connect('mongodb://localhost/orzngo');
     this._server = SocketIO.listen(port);
 
-
-    this._server.sockets.on('connection', function(socket:Socket) {
-      socket.on('register', function(data:{name:String}){
-        User.findOrCreate({name:name, ip:socket.handshake.headers.address}, (err:any, user:User) => {
+    this._server.sockets.on('connection', (socket:Socket) => {
+      console.log('connection');
+      socket.on('register', (data:{name:String}) => {
+        console.log('register');
+        User.findOrCreate({name:data.name, ip:socket.handshake.headers.address}, (err:any, user:User) => {
+          console.log('registerd');
           this._activeUsers[socket.id] = user;
           this._initializeSocketEvents(socket);
           socket.emit('registerd', 'registerd');
@@ -30,13 +32,13 @@ class ChatServer {
   }
 
   private _initializeSocketEvents(socket:Socket) {
-    socket.on('msg', function(data:any) {
+    socket.on('msg', (data:any) => {
       this._server.sockets.emit('msg', data,function(){
         console.log(data);
       });
     });
 
-    socket.on('disconnect', function(){
+    socket.on('disconnect', () => {
       delete this._activeUsers[socket.id];
       socket.disconnect();
     });

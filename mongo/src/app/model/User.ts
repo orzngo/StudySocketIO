@@ -1,14 +1,12 @@
 /// <reference path='../declare.d.ts' />
 
 import mongoose = require('mongoose');
-import BaseSchema = require('./mongoose/schema/BaseSchema');
+import UserSchema = require('./mongoose/schema/UserSchema');
 import UserModel = require('./mongoose/model/User');
 import UserDocument = require('./mongoose/document/UserDocument');
 
-
-
 class User {
-  static schema:BaseSchema = new BaseSchema({
+  static schema:UserSchema = new UserSchema({
     name:String,
     ip:String,
   });
