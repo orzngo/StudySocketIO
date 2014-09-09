@@ -6,10 +6,7 @@ import UserModel = require('./mongoose/model/User');
 import UserDocument = require('./mongoose/document/UserDocument');
 
 class User {
-  static schema:UserSchema = new UserSchema({
-    name:String,
-    ip:String,
-  });
+  static schema:UserSchema = new UserSchema();
 
   static UserModel:UserModel = <UserModel>mongoose.model('User', User.schema);
 

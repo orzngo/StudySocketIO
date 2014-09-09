@@ -3,7 +3,12 @@
 import BaseSchema = require('./BaseSchema');
 
 class UserSchema extends BaseSchema {
-  constructor(schema: any, options: any = {}) {
+  constructor() {
+    var schema = {
+      name : String,
+      age : Number
+    };
+    var options = {};
     super(schema, options);
     this.plugin(require('mongoose-findorcreate'));
   }
